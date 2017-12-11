@@ -11,28 +11,27 @@ export default class AddOrEditNodes extends React.Component{
         return(
             <React.Fragment>
                 <div className="add-edit-block">
-                    <div className="primary-bg-color padding-medium p-relative">
-                        <span className="font-medium">Add/Edit</span> <i className="fa fa-times right-0 font-medium"></i>
+                    <div className="header primary-bg-color padding-medium p-relative white-fg-color">
+                        <span className="font-medium">Add/Edit</span> <i className="fa fa-times font-medium f-right cursor-pointer" onClick={()=>this.props.closeNodes()}></i>
                     </div>
-                    <form onSubmit={this.onSubmit.bind(this)}>
-                        <span>Team Name</span>
+                    <form className="padding-large" onSubmit={this.onSubmit.bind(this)}>
+                        <span className="font-xsmall font-bold">Team Name</span>
                         <div><input type="text" onChange={(event)=>this.handleChange(event, 'teamName')} value={teamName || ''}/></div>
-                        <span>Name</span>
+                        <span className="font-xsmall font-bold">Name</span>
                         <div><input type="text" onChange={(event)=>this.handleChange(event, 'personName')} value={personName || ''}/></div>
-                        <span>Designation</span>
+                        <span className="font-xsmall font-bold">Designation</span>
                         <div><input type="text" onChange={(event)=>this.handleChange(event, 'designation')} value={designation || ''}/></div>
                         <div className="text-align-right">
                             <button type="submit">Save</button>
                         </div>
                     </form>
                 </div>
-                <div className="modal"></div>
+                <div className="white-modal" onClick={()=>this.props.closeNodes()}></div>
             </React.Fragment>
         )
     }
 
     handleChange(event, key){
-        console.log('onChange ',key, event, event.target,event.target.value);
         let obj = this.state.edit || {};
         obj[key] = event.target.value;
         this.setState({edit: obj});
@@ -40,7 +39,6 @@ export default class AddOrEditNodes extends React.Component{
 
     onSubmit(event){
         event.preventDefault();
-        console.log('on Submit');
         let newObj = this.state.edit;
         if(!newObj.key){
             newObj.key = this.findKey();

@@ -13,7 +13,6 @@ export default class Hierarchi extends React.Component {
     }
 
     render() {
-        console.log('render ',this.state.hierarchi);
         return(
             <React.Fragment>
                 {this.structureRendering([this.props.root])}
@@ -22,6 +21,7 @@ export default class Hierarchi extends React.Component {
                         callback={this.callbackUpdate.bind(this)} 
                         option={this.state.addOrEdit.data}
                         parentKey={this.state.addOrEdit.parentKey}
+                        closeNodes={this.closeAddOrEdit.bind(this)}
                         originalData={this.state.hierarchi}/>
                 }
             </React.Fragment>
@@ -30,28 +30,32 @@ export default class Hierarchi extends React.Component {
 
     structureRendering(keys, parentKey = null){
         if(!keys){ return null; }
-        let nextKey = null, keyParent;
+        let nextKey = null, keyParent, showChildrenKey;
 
         return(
             <React.Fragment>
-                <div className="full-width">
+                <div className="before-comp full-width text-align-center"><div className={`size-${keys.length}`}></div></div>
+                <div className="full-width text-align-center comp-parent">
                 {keys.map((value, index)=>{
                     let obj = this.state.hierarchi[value], showChildren = false; 
                     if(!nextKey && (obj.show == true)){
-                        nextKey = obj.children;
                         showChildren = true;
+                        nextKey = obj.children;
                         keyParent = value;
+                        showChildrenKey = index;
                     }
                     return this.getComponent(obj, showChildren, parentKey);
                 })}
                 </div>
+                {(nextKey && nextKey.length > 0) &&
+                    <div className="after-comp full-width text-align-center">
+                        <div className={`first-${showChildrenKey}-${keys.length}`}></div>
+                        <div className={`last-${showChildrenKey}-${keys.length}`}></div>
+                    </div>
+                }
                 {this.structureRendering(nextKey, keyParent)}
             </React.Fragment>
         )
-    }
-
-    addOrEditBlock(){
-
     }
 
     getChildrenCount(key){
@@ -68,7 +72,6 @@ export default class Hierarchi extends React.Component {
     callbackUpdate(newObj, parentKey){
         let hierarchi = JSON.parse(JSON.stringify(this.state.hierarchi));
         if(!hierarchi[newObj.key]){
-            console.log(parentKey, hierarchi[parentKey]);
             if(!hierarchi[parentKey].children){
                 hierarchi[parentKey].children = [];
             }
@@ -81,45 +84,54 @@ export default class Hierarchi extends React.Component {
         });
     }
 
+    closeAddOrEdit(){
+        this.setState({addOrEdit: null});
+    }
+
     getComponent(object, showChildren = false, parentKey){
-        let faClassName = 'fa ' + ((showChildren == true) ? 'fa-minus-circle' : 'fa-plus-circle');
+        let faClassName = 'blue-fg fa ' + ((showChildren == true) ? 'fa-minus-circle' : 'fa-plus-circle');
         return(
-            <div className="cursor-pointer" key={object.key}>
-                <div 
-                    className="padding-small font-bold"
-                    onClick={this.hideOrShow.bind(this, object.key, parentKey)}>
-                    {object.teamName}
+            <div className={"comp-block margin-medium no-vertical-margin display-inline " + (showChildren ? 'active' : '')} key={object.key}>
+                {object.key != this.props.root && <div className="comp-line"><div className="line-child"></div></div> }
+                <div className="text-align-center cursor-pointer hirarchi-comp-box-shadow">
+                    <div 
+                        className={"padding-medium font-bold font-small " + (showChildren ? 'hirarchi-comp-active' : 'hirarchi-box-bottom-border')}
+                        onClick={this.hideOrShow.bind(this, object.key, parentKey)}>
+                        {object.teamName}
+                    </div>
+                    <div className="padding-small hirarchi-box-bottom-border" onClick={this.hideOrShow.bind(this, object.key, parentKey)}>
+                        <div className="font-small font-bold">{object.personName}</div>
+                        <div className="font-xxsmall hirarchi-light-color">{object.designation}</div>
+                    </div>
+                    <div 
+                        className="padding-medium no-horizontal-padding hirarchi-box-bottom-border divider" 
+                        onClick={this.hideOrShow.bind(this, object.key, parentKey)}>
+                        <div className="div-item font-xsmall"><i className="fa fa-users blue-fg"></i> {(object.children && object.children.length) ? object.children.length : 0}</div>
+                        <div className="div-item font-xsmall"><i className="fa fa-user blue-fg"></i> {this.getChildrenCount(object.key)}</div>
+                        {(object.children && object.children.length > 0) &&
+                            <div className="div-item">
+                                <i className={faClassName}></i>
+                            </div>
+                        }
+                    </div>
+                    <div className="padding-medium no-horizontal-padding divider">
+                        <div className="div-item" onClick={this.onAdd.bind(this, object.key, parentKey)}><i className="fa fa-user-plus green-fg"></i></div>
+                        {(object.key != this.props.root) && 
+                            <div className="div-item" onClick={this.onEdit.bind(this, object.key, parentKey)}><i className="fa fa-pencil"></i></div>                    
+                        }
+                        {(object.key != this.props.root) && 
+                            <div className="div-item" onClick={this.onDelete.bind(this, object.key, parentKey)}>
+                                <i className="red-fg fa fa-trash"></i>
+                            </div>                    
+                        }
+                    </div>
                 </div>
-                <div className="padding-small" onClick={this.hideOrShow.bind(this, object.key, parentKey)}>
-                    <div className="person-name">{object.personName}</div>
-                    <div className="designation">{object.designation}</div>
-                </div>
-                <div className="" onClick={this.hideOrShow.bind(this, object.key, parentKey)}>
-                    <div>{(object.children && object.children.length) ? object.children.length : 0}</div>
-                    <div>{this.getChildrenCount(object.key)}</div>
-                    {(object.children && object.children.length > 0) &&
-                        <div>
-                            <i className={faClassName}></i>
-                        </div>
-                    }
-                </div>
-                <div className="">
-                    <div className="" onClick={this.onAdd.bind(this, object.key, parentKey)}><i className="fa fa-user-plus"></i></div>
-                    {(object.key != this.props.root) && 
-                        <div className="" onClick={this.onEdit.bind(this, object.key, parentKey)}><i className="fa fa-pencil"></i></div>                    
-                    }
-                    {(object.key != this.props.root) && 
-                        <div className="" onClick={this.onDelete.bind(this, object.key, parentKey)}>
-                            <i className="fa fa-trash"></i>
-                        </div>                    
-                    }
-                </div>
+                {showChildren && <div className="comp-line"><div className="line-child"></div></div> }                
             </div>
         )
     }
 
     onDelete(key, parentKey){
-        console.log('onDelete');
         let hierarchi = this.state.hierarchi;
         let index = hierarchi[parentKey].children.indexOf(key);
         hierarchi[parentKey].children.splice(index, 1);
@@ -128,7 +140,6 @@ export default class Hierarchi extends React.Component {
     }
 
     onEdit(key, parentKey){
-        console.log('onEdit ',key, parentKey);
         this.setState({
             addOrEdit: {
                 data: this.state.hierarchi[key] || {},
@@ -138,7 +149,6 @@ export default class Hierarchi extends React.Component {
     }
     
     onAdd(key){
-        console.log('onAdd ',key);
         this.setState({
             addOrEdit: {
                 data: {},
@@ -148,7 +158,6 @@ export default class Hierarchi extends React.Component {
     }
     
     hideOrShow(key, parentKey){
-        console.log('onHideOrShow');
         let hierarchi = this.state.hierarchi;
         if(!(hierarchi[key].children && hierarchi[key].children.length > 0)){
             return null;
@@ -180,8 +189,8 @@ export default class Hierarchi extends React.Component {
         if(!key){
             key = this.props.root;
         }
-        data[key].show = true;
         if(data[key].children && data[key].children.length > 0){
+            data[key].show = true;
             return this.setFirstElemShow(data, data[key].children[0]);
         }
         return data;

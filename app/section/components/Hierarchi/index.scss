@@ -1,2 +1,142 @@
 @import '../../../css/variable';
 
+$component-width: 220px;
+.hirarchi-comp-box-shadow{
+    box-shadow: 0px 1px 8px grey;
+    width: $component-width;
+}
+.hirarchi-box-bottom-border{
+    border-bottom: 1px solid #eee; 
+}
+.hirarchi-comp-active{
+    color: white;
+    background-color: grey;    
+}
+.hirarchi-light-color{
+    color: #d2c7c7;
+}
+.f-right{
+    float: right;
+}
+.divider{
+    display: table;
+    width: 100%;
+    .div-item{
+        height: 30px;
+        display: table-cell;
+        vertical-align: middle;            
+    }      
+}
+
+@for $i from 1 through 4 {
+    div.div-item:first-child:nth-last-child(#{$i}),
+    div.div-item:first-child:nth-last-child(#{$i}) ~ div.div-item {
+        width: #{100% / $i}
+    }
+}
+
+.comp-line{
+    height: 40px;
+    width: 100%;
+    text-align: center;
+    .line-child{
+        height: inherit;
+        width: 50%;
+        border-right: 1px solid grey;
+    }
+}
+  
+.white-modal{
+    background-color: #ccc;
+    opacity: 0.5;
+    z-index: 2;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+}
+.add-edit-block{
+    border-radius: 5px;
+    width: 300px;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    top: 50%;
+    left: 50%;
+    position: fixed;
+    background-color: white;
+    box-shadow: 0px 1px 7px black;
+    
+    input{
+        border: 1px solid #ccc;
+        padding: 8px 10px;
+        width: 100%;
+        margin-top: 4px;
+        margin-bottom: 8px;
+    }
+
+    button{
+        width: 100%;
+        border-radius: 5px;
+        border: 0px;
+        font-size: 14px;
+        color: white;
+        height: 32px;
+        background-color: #6868c3;        
+    }
+
+    .header{
+        border-top-left-radius: inherit;
+        border-top-right-radius: inherit;
+    }
+}
+.blue-fg{ color: #6868c3;}
+.green-fg{ color: green;}
+.red-fg{ color: red;}
+
+.before-comp{
+    height: 1px;
+    margin-bottom: -1px;
+
+    & > div{
+        height: inherit;
+        margin: 0 auto;
+        background-color: black;
+    }
+    .size-1{
+        width: 0px;  
+    }
+    .size-2{
+        width: $component-width + 24px;  
+    }
+    .size-3{
+        width: ($component-width + 24px)*2;          
+    }
+    .size-4{
+        width: ($component-width + 24px) * 3;          
+    }
+}
+
+.after-comp{
+    height: 1px;
+    margin-bottom: -1px;
+    text-align: center;
+
+    & > div{
+        height: inherit;
+        display: inline-block;
+        background-color: transparent;
+        vertical-align: top;
+    }
+
+    .first-0-2, .first-0-3, .first-0-4, .last-1-2, .first-1-4, .last-2-3, .last-2-4, .last-3-4, 
+    {
+        background-color: black;                  
+    }
+    $width: ($component-width/2) + 12px;
+
+    .first-1-3, .last-1-3, .first-0-1, .last-0-1 {width: 0px;}
+    .first-1-2, .last-1-2, .first-2-4, .last-2-4, .first-1-4, .last-1-4, .first-0-2, .last-0-2 {width: $width;}
+    .first-2-3, .last-2-3, .first-0-3, .last-0-3 {width: $width * 2;}
+    .first-3-4, .last-3-4, .first-0-4, .last-0-4 {width: $width * 3;}
+}

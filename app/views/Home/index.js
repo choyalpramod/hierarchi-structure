@@ -9,7 +9,7 @@ export default class Home extends React.Component {
     }
     render() {
         return(
-            <div className="full-width">
+            <div className="full-width padding-large no-horizontal-padding">
                 <Hierarchi 
                     data={constants.hierarchi} 
                     root={constants.hierarchiRootKey} />
