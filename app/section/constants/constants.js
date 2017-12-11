@@ -11,8 +11,8 @@ export const hierarchi = {
         teamName: 'Rentomojo',
         personName: 'Gaurav',
         designation: 'CEO',
-        children: ['cko0', 'cfo0', 'ea0', 'vpkyc0']        
-        // children: ['cko0', 'cfo0', 'ea0', 'vpkyc0','vpkyctest0']        
+        // children: ['cko0', 'cfo0', 'ea0', 'vpkyc0']        
+        children: ['cko0', 'cfo0', 'ea0', 'vpkyc0','vpkyctest0']        
     },
     'cko0': {
         key: 'cko0',
