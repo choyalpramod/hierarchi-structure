@@ -37,33 +37,18 @@ export default class Hierarchi extends React.Component {
             <React.Fragment>
                 <div className="before-comp full-width text-align-center"><div className={`size-${keys.length}`}></div></div>
                 <div className="full-width text-align-center comp-parent p-relative">
-                {keys.map((value, index)=>{
-                    let obj = this.state.hierarchi[value], showChildren = false; 
-                    if(!nextKey && (obj.show == true)){
-                        showChildren = true;
-                        nextKey = this.getSlicedChildren(obj);
-                        keyParent = value;
-                        showChildrenKey = index;
-                        parentObj = obj;
-                    }
-                    return this.getComponent(obj, showChildren, parentKey);
-                })}
-                {(parentObj && parentObj.children && parentObj.children.length > 4) && 
-                    <div className="pagination">
-                        {(parentObj.level != 0) &&
-                            <div className="left" onClick={this.prevPage.bind(this, parentObj)}>
-                                <i className="fa fa-arrow-left"></i>
-                                <div>({parentObj.level * this.maxChild})</div>
-                            </div>
+                    {keys.map((value, index)=>{
+                        let obj = this.state.hierarchi[value], showChildren = false; 
+                        if(!nextKey && (obj.show == true)){
+                            showChildren = true;
+                            nextKey = this.getSlicedChildren(obj);
+                            keyParent = value;
+                            showChildrenKey = index;
+                            parentObj = obj;
                         }
-                        {(parentObj.level != (Math.floor(parentObj.children.length/this.maxChild))) &&
-                            <div className="right" onClick={this.nextPage.bind(this, parentObj)}>
-                                <i className="fa fa-arrow-right"></i>
-                                <div>({parentObj.children.length - ((parentObj.level + 1) * this.maxChild)})</div>
-                            </div>
-                        }
-                    </div>
-                }
+                        return this.getComponent(obj, showChildren, parentKey);
+                    })}
+                    {this.pagination(parentObj)}
                 </div>
                 {(nextKey && nextKey.length > 0) &&
                     <div className="after-comp full-width text-align-center">
@@ -235,5 +220,27 @@ export default class Hierarchi extends React.Component {
         let hierarchi = this.state.hierarchi;
         ++hierarchi[obj.key].level;
         this.setState({hierarchi: hierarchi});
+    }
+
+    pagination(parentObj){
+        if(!(parentObj && parentObj.children && parentObj.children.length > 4)){
+            return null
+        }
+        return(
+            <div className="pagination">
+                {(parentObj.level != 0) &&
+                    <div className="left" onClick={this.prevPage.bind(this, parentObj)}>
+                        <i className="fa fa-arrow-left"></i>
+                        <div>({parentObj.level * this.maxChild})</div>
+                    </div>
+                }
+                {(parentObj.level != (Math.floor(parentObj.children.length/this.maxChild))) &&
+                    <div className="right" onClick={this.nextPage.bind(this, parentObj)}>
+                        <i className="fa fa-arrow-right"></i>
+                        <div>({parentObj.children.length - ((parentObj.level + 1) * this.maxChild)})</div>
+                    </div>
+                }
+            </div>
+        )
     }
 }
